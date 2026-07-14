@@ -1,0 +1,25 @@
+app:
+  version: 1.0.0
+server:
+  port: 8383
+  servlet:
+    context-path: /gkfcsolution
+spring:
+  application:
+    name: springboot_Project_structure
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  main:
+    allow-circular-references: true
+#  profiles:
+#    active: ${SPRING_PROFILE:dev}
+  logging:
+    level:
+      #      com.springcraft: DEBUG  # Logs détaillés pour votre code
+      org.hibernate.SQL: DEBUG  # Logs SQL

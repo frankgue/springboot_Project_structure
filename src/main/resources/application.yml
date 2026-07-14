@@ -1,0 +1,26 @@
+app:
+  version: 1.0.0
+server:
+  port: 8383
+  servlet:
+    context-path: /gkfcsolution
+spring:
+  application:
+    name: springboot_Project_structure
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    password: ''
+    url: jdbc:mysql://localhost:3306/springboot_Project_structure?createDatabaseIfNotExist=true
+    username: root
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  main:
+    allow-circular-references: true
+  profiles:
+    active: ${SPRING_PROFILE:dev}
+  logging:
+    pattern:
+      console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
