@@ -1,7 +1,18 @@
 app:
 server:
   port: ${SERVER_PORT}
+  shutdown: graceful
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
 spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+    jackson:
+      read:
+        FAIL_ON_UNKNOWN_PROPERTIES: false
+      write:
+        WRITE_DATES_AS_TIMESTAMPS: false
   datasource:
     url: ${DATABASE_URL}  # Injecté depuis l'environnement
     username: ${DATABASE_USER}
@@ -17,5 +28,36 @@ spring:
     show-sql: true
   logging:
     level:
-      #      com.springcraft: DEBUG  # Logs détaillés pour votre code
-      org.springframework: WARN  # Seulement les warnings/erreurs
+      root: WARN  # Logs minimaux
+      com.springcraft: INFO  # Votre code en INFO
+      org.springframework: WARN
+      org.hibernate: WARN
+    file:
+      name: /var/log/springcraft/application.log
+      max-size: 10MB
+      max-history: 30  # Garde 30 jours
+  cache:
+    type: redis  # Ou caffeine pour un cache local
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+resilience4j:
+  circuitbreaker:
+    instances:
+      monServiceExterne:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50 # Bascule en "OPEN" si 50% des 10 derniers appels échouent
+        waitDurationInOpenState: 10000ms # Reste ouvert pendant 10s avant de retenter (Half-Open)
