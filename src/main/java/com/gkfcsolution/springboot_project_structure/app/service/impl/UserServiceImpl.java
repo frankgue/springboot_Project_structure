@@ -5,6 +5,7 @@ import com.gkfcsolution.springboot_project_structure.app.model.dto.CreateUserReq
 import com.gkfcsolution.springboot_project_structure.app.model.dto.UpdateUserRequest;
 import com.gkfcsolution.springboot_project_structure.app.model.dto.UserDTO;
 import com.gkfcsolution.springboot_project_structure.app.model.entity.User;
+import com.gkfcsolution.springboot_project_structure.app.model.enums.Role;
 import com.gkfcsolution.springboot_project_structure.app.model.mappers.UserMapper;
 import com.gkfcsolution.springboot_project_structure.app.repository.UserRepository;
 import com.gkfcsolution.springboot_project_structure.app.service.EmailService;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +38,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     private EmailService emailService;  // Spring injecte la bonne implémentation selon le profil
     private final UserMapper userMapper;
 
@@ -51,6 +54,10 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userMapper.toEntity(request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        if (user.getRole() == null) {
+            user.setRole(Role.USER);
+        }
         User saveUser = userRepository.save(user);
 
         log.info("User created with ID: {}", saveUser.getId());

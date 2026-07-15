@@ -1,4 +1,4 @@
-package com.gkfcsolution.springboot_project_structure.app.service;
+package com.gkfcsolution.springboot_project_structure.app.service.impl;
 
 import com.gkfcsolution.springboot_project_structure.app.exception.DuplicateResourceException;
 import com.gkfcsolution.springboot_project_structure.app.exception.InvalidTokenException;
@@ -9,6 +9,8 @@ import com.gkfcsolution.springboot_project_structure.app.model.dto.RegisterReque
 import com.gkfcsolution.springboot_project_structure.app.model.entity.User;
 import com.gkfcsolution.springboot_project_structure.app.model.enums.Role;
 import com.gkfcsolution.springboot_project_structure.app.repository.UserRepository;
+import com.gkfcsolution.springboot_project_structure.app.service.AuthenticationService;
+import com.gkfcsolution.springboot_project_structure.app.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
