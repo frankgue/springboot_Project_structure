@@ -1,5 +1,10 @@
 app:
   version: 1.0.0
+jwt:
+  secret: ${JWT_SECRET:3cfa76ef14937c1c0ea519f8fc057a80fbb114b92aa48bda8e7cc72f1c0e65e1}
+  expiration: 900000 # 15 minutes
+  refresh-token:
+    expiration: 604800000 # 7 jours
 server:
   port: 8383
   servlet:

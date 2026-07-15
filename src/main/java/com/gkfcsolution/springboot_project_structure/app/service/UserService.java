@@ -1,6 +1,7 @@
 package com.gkfcsolution.springboot_project_structure.app.service;
 
 import com.gkfcsolution.springboot_project_structure.app.model.dto.CreateUserRequest;
+import com.gkfcsolution.springboot_project_structure.app.model.dto.UpdateUserRequest;
 import com.gkfcsolution.springboot_project_structure.app.model.dto.UserDTO;
 
 import java.util.List;
@@ -18,4 +19,8 @@ public interface UserService {
 
     List<UserDTO> getAllUsers();
     UserDTO createUser(CreateUserRequest request);
+    UserDTO getUserById(Long id);
+    UserDTO updateUser(Long id, UpdateUserRequest request);
+    void deleteUser(Long id);
+    UserDTO getCurrentUser();
 }

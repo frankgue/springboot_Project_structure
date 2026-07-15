@@ -4,18 +4,23 @@ server:
   port: 8383
   servlet:
     context-path: /gkfcsolution
+jwt:
+  secret: ${JWT_SECRET:3cfa76ef14937c1c0ea519f8fc057a80fbb114b92aa48bda8e7cc72f1c0e65e1}
+  expiration: 900000 # 15 minutes
+  refresh-token:
+    expiration: 604800000 # 7 jours
 spring:
   application:
     name: springboot_Project_structure
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+#  datasource:
+#    url: jdbc:h2:mem:testdb
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    password:
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2-console
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:

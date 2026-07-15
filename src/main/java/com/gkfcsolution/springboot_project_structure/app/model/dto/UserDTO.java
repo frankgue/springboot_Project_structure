@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /**
  * Created on 2026 at 12:27
  * File: null.java
@@ -19,5 +21,9 @@ import lombok.NoArgsConstructor;
 public class UserDTO {
     private Long id;
     private String email;
-    private String name;
+    private String firstName;
+    private String lastName;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
