@@ -27,14 +27,17 @@
         </encoder>
     </appender>
 
-    <logger name="com.gkfcsolution" level="TRACE" />
+<!--    <logger name="com.gkfcsolution" level="TRACE" />-->
+    <logger name="com.gkfcsolution" level="INFO" />
 
     <logger name="org.springframework" level="INFO"/>
     <logger name="org.hibernate" level="INFO"/>
     <logger name="org.apache.tomcat" level="INFO"/>
     <logger name="com.zaxxer.hikari" level="INFO"/>
 
-    <root level="TRACE">
+<!--    <root level="TRACE">-->
+<!--    <root level="DEBUG">-->
+    <root level="INFO">
         <appender-ref ref="JSON"/>
         <appender-ref ref="CONSOLE"/> </root>
 </configuration>
