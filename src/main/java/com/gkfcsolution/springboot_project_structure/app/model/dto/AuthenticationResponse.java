@@ -12,9 +12,11 @@ package com.gkfcsolution.springboot_project_structure.app.model.dto;
 public record AuthenticationResponse(
         String accessToken,
         String refreshToken,
-        String tokenType
+        String tokenType,
+        boolean requires2FA
 ) {
-    public AuthenticationResponse(String accessToken, String refreshToken) {
-        this(accessToken, refreshToken, "Bearer");
+    public AuthenticationResponse(String accessToken, String refreshToken, boolean requires2FA) {
+//        this(accessToken, refreshToken, "Bearer",false);
+        this(accessToken, refreshToken, "Bearer",requires2FA);
     }
 }

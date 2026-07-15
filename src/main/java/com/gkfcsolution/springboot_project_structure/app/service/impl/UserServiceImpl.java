@@ -1,6 +1,7 @@
 package com.gkfcsolution.springboot_project_structure.app.service.impl;
 
 import com.gkfcsolution.springboot_project_structure.app.exception.ResourceNotFoundException;
+import com.gkfcsolution.springboot_project_structure.app.exception.UserNotFoundException;
 import com.gkfcsolution.springboot_project_structure.app.model.dto.CreateUserRequest;
 import com.gkfcsolution.springboot_project_structure.app.model.dto.UpdateUserRequest;
 import com.gkfcsolution.springboot_project_structure.app.model.dto.UserDTO;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -141,5 +143,59 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         return userMapper.toDTO(user);
+    }
+
+    @Transactional
+    @Override
+    public void set2FASecret(Long userId, String secret) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        user.setTwoFactorSecret(secret);
+        // 2FA pas encore activée à ce stade
+        userRepository.save(user);
+    }
+
+    @Transactional
+    @Override
+    public void enable2FA(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        if (user.getTwoFactorSecret() == null) {
+            throw new IllegalStateException("2FA secret not set");
+        }
+
+        user.setTwoFactorEnabled(true);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    @Override
+    public void disable2FA(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        user.setTwoFactorEnabled(false);
+        user.setTwoFactorSecret(null); // Supprime le secret
+        userRepository.save(user);
+    }
+
+    @Override
+    public User findOrCreateOAuth2User(String email, String name) {
+        return userRepository.findByEmail(email)
+                .orElseGet(() -> createOAuth2User(email, name));
+    }
+
+    private User createOAuth2User(String email, String name) {
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString())); // Password aléatoire
+        user.setFirstName(name);
+        user.setRole(Role.USER);
+        user.setEnabled(true);
+        user.setOauth2Provider("GOOGLE"); // ou GITHUB
+
+        return userRepository.save(user);
     }
 }

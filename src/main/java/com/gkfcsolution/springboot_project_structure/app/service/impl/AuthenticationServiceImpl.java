@@ -1,6 +1,7 @@
 package com.gkfcsolution.springboot_project_structure.app.service.impl;
 
 import com.gkfcsolution.springboot_project_structure.app.exception.DuplicateResourceException;
+import com.gkfcsolution.springboot_project_structure.app.exception.InvalidCodeException;
 import com.gkfcsolution.springboot_project_structure.app.exception.InvalidTokenException;
 import com.gkfcsolution.springboot_project_structure.app.model.dto.AuthenticationResponse;
 import com.gkfcsolution.springboot_project_structure.app.model.dto.LoginRequest;
@@ -11,6 +12,7 @@ import com.gkfcsolution.springboot_project_structure.app.model.enums.Role;
 import com.gkfcsolution.springboot_project_structure.app.repository.UserRepository;
 import com.gkfcsolution.springboot_project_structure.app.service.AuthenticationService;
 import com.gkfcsolution.springboot_project_structure.app.service.JwtService;
+import com.gkfcsolution.springboot_project_structure.app.service.TwoFactorAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,6 +38,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    private final TwoFactorAuthService twoFactorAuthService;
+
     @Override
     public AuthenticationResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
@@ -55,7 +59,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var accessToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
 
-        return new AuthenticationResponse(accessToken, refreshToken);
+        return new AuthenticationResponse(accessToken, refreshToken, false);
     }
 
     @Override
@@ -70,10 +74,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
+        // ÉTAPE 2 : Si 2FA activée, ne génère PAS encore les tokens
+        if (user.isTwoFactorEnabled()) {
+            return new AuthenticationResponse(null, null, true);
+        }
+
         var accessToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
 
-        return new AuthenticationResponse(accessToken, refreshToken);
+        return new AuthenticationResponse(accessToken, refreshToken, false);
     }
 
     @Override
@@ -90,6 +99,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var accessToken = jwtService.generateToken(user);
         var newRefreshToken = jwtService.generateRefreshToken(user);
 
-        return new AuthenticationResponse(accessToken, newRefreshToken);
+//        return new AuthenticationResponse(accessToken, newRefreshToken);
+        return new AuthenticationResponse(accessToken, newRefreshToken, false);
+    }
+
+    @Override
+    public AuthenticationResponse verify2FAAndLogin(String email, String code) {
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        // Vérifie le code 2FA
+        if (!twoFactorAuthService.verifyCode(user.getTwoFactorSecret(), code)) {
+            throw new InvalidCodeException("Invalid 2FA code");
+        }
+
+        // Code valide → génère les tokens JWT
+        var accessToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+
+        return new AuthenticationResponse(accessToken, refreshToken, false);
     }
 }

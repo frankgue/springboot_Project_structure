@@ -40,6 +40,7 @@ public class UserMapper {
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setPassword(request.getPassword());
+        user.isTwoFactorEnabled();
         return user;
     }
 

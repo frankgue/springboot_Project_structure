@@ -3,6 +3,7 @@ package com.gkfcsolution.springboot_project_structure.app.service;
 import com.gkfcsolution.springboot_project_structure.app.model.dto.CreateUserRequest;
 import com.gkfcsolution.springboot_project_structure.app.model.dto.UpdateUserRequest;
 import com.gkfcsolution.springboot_project_structure.app.model.dto.UserDTO;
+import com.gkfcsolution.springboot_project_structure.app.model.entity.User;
 
 import java.util.List;
 
@@ -23,4 +24,12 @@ public interface UserService {
     UserDTO updateUser(Long id, UpdateUserRequest request);
     void deleteUser(Long id);
     UserDTO getCurrentUser();
+
+    // 2FA related methods
+    // Two-Factor Authentication (2FA)
+    void set2FASecret(Long userId, String secret);
+    void enable2FA(Long userId);
+    void disable2FA(Long userId);
+
+    User findOrCreateOAuth2User(String email, String name);
 }

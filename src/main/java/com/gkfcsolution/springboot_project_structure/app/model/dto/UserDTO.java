@@ -23,6 +23,8 @@ public class UserDTO {
     private String email;
     private String firstName;
     private String lastName;
+    private boolean  twoFactorEnabled;
+
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

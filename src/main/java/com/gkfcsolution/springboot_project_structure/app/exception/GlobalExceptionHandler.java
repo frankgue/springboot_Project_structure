@@ -38,6 +38,50 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
+    @ExceptionHandler(InvalidCodeException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCodeException(InvalidCodeException ex) {
+        log.error("Invalid Code: {}", ex.getMessage());
+        ErrorResponse error = new ErrorResponse(
+                546,
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(546).body(error);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+        log.error("User Not found: {}", ex.getMessage());
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(TooManyAttemptsException.class)
+    public ResponseEntity<ErrorResponse> handleTooManyAttemptsException(TooManyAttemptsException ex) {
+        log.error("Too many attempted Code: {}", ex.getMessage());
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.TOO_MANY_REQUESTS.value(),
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(error);
+    }
+
+    @ExceptionHandler(TwoFactorAuthException.class)
+    public ResponseEntity<ErrorResponse> handleTwoFactorAuthException(TwoFactorAuthException ex) {
+        log.error("Two Factor auth error: {}", ex.getMessage());
+        ErrorResponse error = new ErrorResponse(
+                569,
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(569).body(error);
+    }
+
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(ValidationException ex) {
         log.error("Validation error: {}", ex.getMessage());

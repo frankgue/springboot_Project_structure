@@ -1,9 +1,6 @@
 package com.gkfcsolution.springboot_project_structure.app.controller;
 
-import com.gkfcsolution.springboot_project_structure.app.model.dto.AuthenticationResponse;
-import com.gkfcsolution.springboot_project_structure.app.model.dto.LoginRequest;
-import com.gkfcsolution.springboot_project_structure.app.model.dto.RefreshTokenRequest;
-import com.gkfcsolution.springboot_project_structure.app.model.dto.RegisterRequest;
+import com.gkfcsolution.springboot_project_structure.app.model.dto.*;
 import com.gkfcsolution.springboot_project_structure.app.service.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -50,5 +47,14 @@ public class AuthenticationController {
             @RequestBody RefreshTokenRequest request
     ) {
         return ResponseEntity.ok(authenticationService.refreshToken(request));
+    }
+
+    @PostMapping("/2fa/verify")
+    public ResponseEntity<AuthenticationResponse> verify2FA(
+            @Valid @RequestBody Verify2FALoginRequest request
+    ) {
+        return ResponseEntity.ok(
+                authenticationService.verify2FAAndLogin(request.email(), request.code())
+        );
     }
 }

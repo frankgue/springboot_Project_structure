@@ -18,5 +18,6 @@ public interface AuthenticationService {
     AuthenticationResponse register(RegisterRequest request);
     AuthenticationResponse login(LoginRequest request);
     AuthenticationResponse refreshToken(RefreshTokenRequest request);
+    AuthenticationResponse verify2FAAndLogin(String email, String code);
 
 }

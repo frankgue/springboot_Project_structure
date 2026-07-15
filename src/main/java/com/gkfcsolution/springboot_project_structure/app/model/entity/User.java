@@ -49,6 +49,13 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private boolean enabled = true;
 
+    @Column(name = "two_factor_enabled")
+    private boolean twoFactorEnabled = false;
+
+    @Column(name = "two_factor_secret")
+    private String twoFactorSecret;
+    @Column(name = "auth_to_provider")
+    private String oauth2Provider;
 
 
     @Column(name = "created_at", nullable = false, updatable = false)
